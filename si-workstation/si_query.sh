@@ -169,11 +169,14 @@ for pr in prs:
 "
 }
 
-# Clone a repo with token embedded in URL (not saved to shell history if sourced).
+# Clone a repo with token embedded in URL.
+# GIT_SSL_NO_VERIFY=true is required — the SI corporate CA is not in Ubuntu's
+# trust store, so git rejects the certificate just like curl does without -k.
 bitbucket_clone() {
   local project="${1:?Usage: bitbucket_clone <PROJECT_KEY> <REPO_SLUG>}"
   local repo="${2:?Missing repo slug}"
-  git clone "https://${BITBUCKET_USERNAME}:${BITBUCKET_PERSONAL_TOKEN}@git.system.local/scm/${project,,}/${repo}.git"
+  GIT_SSL_NO_VERIFY=true git clone \
+    "https://${BITBUCKET_USERNAME}:${BITBUCKET_PERSONAL_TOKEN}@git.system.local/scm/${project,,}/${repo}.git"
 }
 
 echo "si_query.sh loaded:"
